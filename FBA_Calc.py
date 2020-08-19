@@ -23,3 +23,26 @@ oversized_product_tiers = {
     " Large oversize 151 lb or less": "$75.78 + $0.79/lb above first 90 lb",
     " Special oversize" : "$137.32 + $0.91/lb above first 90 lb"
 }
+
+df['length_plus_girth'] = ((df['shortest-side']+df['median-side']) * 2) + df['longest-side']
+print(df)
+# def length_plus_girth():
+#     """
+#     Calculates Length + girth with steps from Amazon
+
+#     Calculate the girth by adding the shortest and median sides and multiplying by 2.
+#     Add the longest side and girth.
+
+#     Returns: girth in inches 
+#     """
+#     df['length_plus_girth'] = (df['shortest-side']+df['median-side'] * 2) + df['longest-side']
+
+#     return df
+
+# def main():
+#     length_plus_girth(df)
+
+# print(df)
+
+# if __name__ == "__main__":
+# #	main()  
