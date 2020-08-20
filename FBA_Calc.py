@@ -45,6 +45,26 @@ def dimensional_weight():
     df['dim-weight'] = ((df['longest-side']*df['median-side']*df['shortest-side'])/139)
     return df
 
+# to do - this won't work with floats 
+def oz_round(x):
+    return round( x / .0625) * .0625
+
+# # to do - this is saying df is being called be
+# def fba_functional_weight():
+#     """
+#     Calculates weights Amazon will use to determine shipping fees.
+#     Link for rates in README
+#     for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
+#     """
+
+#     if df['item-package-weight'] <= 1:
+#         df['fba-funct-weight'] = oz_round(df['item-package-weight'] + .25)
+#     else:
+#         df = df  
+#     return df
+# #np.ceil(df[]) for rounding up to the nearest whole lbs
+
 length_plus_girth()
 dimensional_weight()
+#fba_functional_weight()
 print(df)
