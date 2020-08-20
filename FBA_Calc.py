@@ -14,7 +14,6 @@ standard_size_product_tiers = {
     "Large standard-size (2+ to 3 lb)": 5.42,
     "Large standard-size (3+ lb to 21 lb)": "$5.42 + $0.38/lb above first 3 lb"
 }
-
 # add 1 lb for packaging weight in this size tier
 # greater of dim weight or unit weight + packaging then roundup to whole pound
 oversized_product_tiers = {
@@ -24,25 +23,28 @@ oversized_product_tiers = {
     " Special oversize" : "$137.32 + $0.91/lb above first 90 lb"
 }
 
-df['length_plus_girth'] = ((df['shortest-side']+df['median-side']) * 2) + df['longest-side']
+def length_plus_girth():
+    """
+    Calculates Length + girth with steps from Amazon
+
+    Calculate the girth by adding the shortest and median sides and multiplying by 2.
+    Add the longest side and girth.
+
+    Returns df: 'length_plus_girth' in inches 
+    """
+
+    df['length_plus_girth'] = ((df['shortest-side']+df['median-side']) * 2) + df['longest-side']
+    return df
+
+def dimensional_weight():
+    """
+    Calculates (LxHxW) / 139 from Amazon's dim weight rules. Link can be found in README.
+    The dimensional weight for oversize items assumes a minimum width and height of 2 inches.
+    The total shipping weight for each unit is rounded up to the nearest pound.
+    """
+    df['dim-weight'] = ((df['longest-side']*df['median-side']*df['shortest-side'])/139)
+    return df
+
+length_plus_girth()
+dimensional_weight()
 print(df)
-# def length_plus_girth():
-#     """
-#     Calculates Length + girth with steps from Amazon
-
-#     Calculate the girth by adding the shortest and median sides and multiplying by 2.
-#     Add the longest side and girth.
-
-#     Returns: girth in inches 
-#     """
-#     df['length_plus_girth'] = (df['shortest-side']+df['median-side'] * 2) + df['longest-side']
-
-#     return df
-
-# def main():
-#     length_plus_girth(df)
-
-# print(df)
-
-# if __name__ == "__main__":
-# #	main()  
