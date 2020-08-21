@@ -50,29 +50,21 @@ def dimensional_weight():
 def np_round (value, resolution):
     return np.ceil(value / resolution) * resolution
 
-# To Do: Delete test values 
-print ("rounding to oz try 2")
-print (np_round (10.38, 0.0625))
-print (np_round (11.12, 0.0625))
-print (np_round (5.24, 0.0625))
-print (np_round (9.76, 0.0625))
+# to do - this is saying df is being called be
+# https://datatofish.com/if-condition-in-pandas-dataframe/
+def fba_functional_weight():
+    """
+    Calculates weights Amazon will use to determine shipping fees.
+    Link for rates in README
+    for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
+    """
 
-# # to do - this is saying df is being called be
-# def fba_functional_weight():
-#     """
-#     Calculates weights Amazon will use to determine shipping fees.
-#     Link for rates in README
-#     for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
-#     """
+    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: np_round(x, .0625) + .25 if x <= 1 else x)
+    return df
 
-#     if df['item-package-weight'] <= 1:
-#         df['fba-funct-weight'] = oz_round(df['item-package-weight'] + .25)
-#     else:
-#         df = df  
-#     return df
 #np.ceil(df[]) for rounding up to the nearest whole lbs
 
 length_plus_girth()
 dimensional_weight()
-#fba_functional_weight()
-print(df)
+fba_functional_weight()
+print(df.head(10))
