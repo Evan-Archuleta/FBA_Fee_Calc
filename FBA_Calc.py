@@ -45,17 +45,17 @@ def dimensional_weight():
     df['dim-weight'] = ((df['longest-side']*df['median-side']*df['shortest-side'])/139)
     return df
 
-# to do - might need to iterate through the df with a for loop
-# https://stackoverflow.com/questions/8118679/python-rounding-by-quarter-intervals
-def roundPartial (value, resolution):
-    return round (value / resolution) * resolution
+# Rounds up to the next oz 
+# https://stackoverflow.com/questions/53201470/how-to-always-round-up-a-xx-5-in-numpy
+def np_round (value, resolution):
+    return np.ceil(value / resolution) * resolution
 
-print ("Rounding to oz")
-print (roundPartial (10.38, 0.0625))
-print (roundPartial (11.12, 0.0625))
-print (roundPartial (5.24, 0.0625))
-print (roundPartial (9.76, 0.0625))
-     
+# To Do: Delete test values 
+print ("rounding to oz try 2")
+print (np_round (10.38, 0.0625))
+print (np_round (11.12, 0.0625))
+print (np_round (5.24, 0.0625))
+print (np_round (9.76, 0.0625))
 
 # # to do - this is saying df is being called be
 # def fba_functional_weight():
