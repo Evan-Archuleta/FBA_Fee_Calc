@@ -50,12 +50,6 @@ def dimensional_weight():
 def np_round (value, resolution):
     return np.ceil(value / resolution) * resolution
 
-# To Do: Delete test values 
-print ("rounding to oz try 2")
-print (np_round (10.38, 0.0625))
-print (np_round (11.12, 0.0625))
-print (np_round (5.24, 0.0625))
-print (np_round (9.76, 0.0625))
 
 # # to do - this is saying df is being called be
 # def fba_functional_weight():
