@@ -60,8 +60,11 @@ def fba_functional_weight():
     for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
     """
     #Left off here after the else works if we aren't comparing / finding the max of dim vs actual weight 
+    #calculating weird value of 0    0.76 
     b = np.maximum(df['dim-weight'], df['item-package-weight'])
-    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: x if x <= 1 or x > 150 else b)
+    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: x if x <= 1 else df['dim-weight'])
+    
+    print(b)
     return df
 
 #def product_tier_size():
@@ -74,3 +77,4 @@ dimensional_weight()
 fba_functional_weight()
 print(df.head(10))
 
+df.to_csv('output.csv')
