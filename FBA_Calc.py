@@ -47,11 +47,12 @@ def dimensional_weight():
 
 # Rounds up to the next oz 
 # https://stackoverflow.com/questions/53201470/how-to-always-round-up-a-xx-5-in-numpy
+# TO DO: we'll need this for adding in the packaging in the future
 def np_round (value, resolution):
     return np.ceil(value / resolution) * resolution
-    #df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: np_round(x, .0625) + .25 if x <= 1 else x)
-    # TO DO: we'll need this for adding in the packaging in the future 
 
+# Calculates the weight Amazon will use for calculations 
+#TO DO: add in a condition where if weight is greater than 150 lbs to use actual weight 
 #https://datatofish.com/if-condition-in-pandas-dataframe/
 def fba_functional_weight():
     """
@@ -59,12 +60,9 @@ def fba_functional_weight():
     Link for rates in README
     for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
     """
-    #Left off here after the else works if we aren't comparing / finding the max of dim vs actual weight 
-    #calculating weird value of 0    0.76 
     b = np.maximum(df['dim-weight'], df['item-package-weight'])
-    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: x if x <= 1 else df['dim-weight'])
-    
-    print(b)
+
+    df['fba-funct-weight'] = np.choose(df['item-package-weight'] < 1, [b, df['item-package-weight']])
     return df
 
 #def product_tier_size():
