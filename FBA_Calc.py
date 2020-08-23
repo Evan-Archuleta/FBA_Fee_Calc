@@ -30,7 +30,7 @@ def length_plus_girth():
     Calculate the girth by adding the shortest and median sides and multiplying by 2.
     Add the longest side and girth.
 
-    Returns df: 'length_plus_girth' in inches 
+    Returns df: 'length_plus_girth' in inches
     """
 
     df['length_plus_girth'] = ((df['shortest-side']+df['median-side']) * 2) + df['longest-side']
@@ -42,29 +42,35 @@ def dimensional_weight():
     The dimensional weight for oversize items assumes a minimum width and height of 2 inches.
     The total shipping weight for each unit is rounded up to the nearest pound.
     """
-    df['dim-weight'] = ((df['longest-side']*df['median-side']*df['shortest-side'])/139)
+    df['dim-weight'] = np.round(((df['longest-side']*df['median-side']*df['shortest-side'])/139), 2)
     return df
 
 # Rounds up to the next oz 
 # https://stackoverflow.com/questions/53201470/how-to-always-round-up-a-xx-5-in-numpy
 def np_round (value, resolution):
     return np.ceil(value / resolution) * resolution
+    #df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: np_round(x, .0625) + .25 if x <= 1 else x)
+    # TO DO: we'll need this for adding in the packaging in the future 
 
-# to do - this is saying df is being called be
-# https://datatofish.com/if-condition-in-pandas-dataframe/
+#https://datatofish.com/if-condition-in-pandas-dataframe/
 def fba_functional_weight():
     """
     Calculates weights Amazon will use to determine shipping fees.
     Link for rates in README
     for standard size tiers under 1 lbs is rounded to nearest oz (.0625 lbs)
     """
-
-    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: np_round(x, .0625) + .25 if x <= 1 else x)
+    #Left off here after the else works if we aren't comparing / finding the max of dim vs actual weight 
+    b = np.maximum(df['dim-weight'], df['item-package-weight'])
+    df['fba-funct-weight'] = df['item-package-weight'].apply(lambda x: x if x <= 1 or x > 150 else b)
     return df
 
-#np.ceil(df[]) for rounding up to the nearest whole lbs
+#def product_tier_size():
+#     """calculates if an item is standard or oversized
+
+#     """
 
 length_plus_girth()
 dimensional_weight()
 fba_functional_weight()
 print(df.head(10))
+
