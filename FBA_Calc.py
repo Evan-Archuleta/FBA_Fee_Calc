@@ -22,7 +22,6 @@ oversized_product_tiers = {
     " Large oversize 151 lb or less": "$75.78 + $0.79/lb above first 90 lb",
     " Special oversize" : "$137.32 + $0.91/lb above first 90 lb"
 }
-
 def length_plus_girth():
     """
     Calculates Length + girth with steps from Amazon
@@ -52,8 +51,8 @@ def np_round (value, resolution):
     return np.ceil(value / resolution) * resolution
 
 # Calculates the weight Amazon will use for calculations 
-#TO DO: add in a condition where if weight is greater than 150 lbs to use actual weight 
-#https://datatofish.com/if-condition-in-pandas-dataframe/
+# https://datatofish.com/if-condition-in-pandas-dataframe/
+# TO DO: incorporate the greater than 150 lbs special oversized fringe case 
 def fba_functional_weight():
     """
     Calculates weights Amazon will use to determine shipping fees.
@@ -62,17 +61,37 @@ def fba_functional_weight():
     """
     b = np.maximum(df['dim-weight'], df['item-package-weight'])
 
-    df['fba-funct-weight'] = np.choose(df['item-package-weight'] < 1, [b, df['item-package-weight']])
+    df['fba-funct-weight'] = np.choose(df['item-package-weight'] < 1 , [b, df['item-package-weight']]) 
     return df
 
-#def product_tier_size():
-#     """calculates if an item is standard or oversized
+def product_tier_size():
+    x = df['fba-funct-weight']
+    # weight_tiers = {'small standard-size': .75,
+    #     'large standard-size': 20,
+    #     'small oversize': 70,
+    #     'medium oversize': 150,
+    #     'large oversize': 150,
+    #     'special oversize': 150.01}
+    print(x)
+    if [x <.75]:
+        df['item-package'] = 'small standard-size'
+    elif [(x>.75) & (x <20)]:
+        df['item-package'] = 'large standard-size'
+    else:
+        print('error')
+    
+    # x[(x>.75) & (x <20)] = 'large standard-size'
+    # x[(x>20) & (x <70)] = 'small oversize'
+    # x[(x>70) & (x <150)] = 'medium oversize'
+    # x[(x>150.01)] = 'medium oversize'
+    # df['product-size'] = x
+    return df
 
-#     """
 
 length_plus_girth()
 dimensional_weight()
 fba_functional_weight()
+product_tier_size()
 print(df.head(10))
 
 df.to_csv('output.csv')
