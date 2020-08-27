@@ -65,21 +65,23 @@ def fba_functional_weight():
     return df
 
 def product_tier_size():
-    x = df['fba-funct-weight']
+    funct_weight = df['fba-funct-weight']
     # weight_tiers = {'small standard-size': .75,
     #     'large standard-size': 20,
     #     'small oversize': 70,
     #     'medium oversize': 150,
     #     'large oversize': 150,
     #     'special oversize': 150.01}
-    print(x)
-    if [x <.75]:
-        df['item-package'] = 'small standard-size'
-    elif [(x>.75) & (x <20)]:
-        df['item-package'] = 'large standard-size'
-    else:
-        print('error')
-    
+    new_weights = []
+    for weights in funct_weight:
+        if [weights <.75]:
+            new_weights.append('small standard-size')
+        elif [(weights>.75) & (weights <20)]:
+            new_weights.append('large standard-size')
+        else:
+            new_weights.append('error')
+    df['item-package'] = new_weights
+    print(new_weights)
     # x[(x>.75) & (x <20)] = 'large standard-size'
     # x[(x>20) & (x <70)] = 'small oversize'
     # x[(x>70) & (x <150)] = 'medium oversize'
