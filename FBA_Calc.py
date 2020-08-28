@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from numpy import median
 
 df = pd.read_csv("sku_info.csv")
 
@@ -64,36 +65,51 @@ def fba_functional_weight():
     df['fba-funct-weight'] = np.choose(df['item-package-weight'] < 1 , [b, df['item-package-weight']]) 
     return df
 
-def product_tier_size():
-    funct_weight = df['fba-funct-weight']
+
+def standard_or_oversize():
+    """ Determine if object is standard size or oversized """
+
+    weight = df['dim-weight']
+    length = df['longest-side']
+    width = df['median-side']
+    height = df['shortest-side']
+
+    if any([(weight > 20),
+            (max(length, width, height) > 18),
+            (min(length, width, height) > 8),
+            (median([length, width, height]) > 14)]):
+        return "Oversize"
+    return "Standard"
+    
+    
     # weight_tiers = {'small standard-size': .75,
     #     'large standard-size': 20,
     #     'small oversize': 70,
     #     'medium oversize': 150,
     #     'large oversize': 150,
     #     'special oversize': 150.01}
-    new_weights = []
-    for weights in funct_weight:
-        if [weights <.75]:
-            new_weights.append('small standard-size')
-        elif [(weights>.75) & (weights <20)]:
-            new_weights.append('large standard-size')
-        else:
-            new_weights.append('error')
-    df['item-package'] = new_weights
-    print(new_weights)
+    # new_weights = []
+    # for new_weights in range(len(funct_weight)):
+    #     if [funct_weight < .75]:
+    #         new_weights.append('small standard-size')
+    #     elif [(funct_weight > .75) & (funct_weight < 20)]:
+    #         new_weights.append('large standard-size')
+    #     else:
+    #         new_weights.append('error')
+    # df['item-package'] = new_weights
+    # print(new_weights)
     # x[(x>.75) & (x <20)] = 'large standard-size'
     # x[(x>20) & (x <70)] = 'small oversize'
     # x[(x>70) & (x <150)] = 'medium oversize'
     # x[(x>150.01)] = 'medium oversize'
     # df['product-size'] = x
-    return df
+    
 
 
 length_plus_girth()
 dimensional_weight()
 fba_functional_weight()
-product_tier_size()
+standard_or_oversize()
 print(df.head(10))
 
 df.to_csv('output.csv')
