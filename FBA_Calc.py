@@ -68,42 +68,11 @@ def fba_functional_weight():
 def standard_or_oversize():
     """ Determine if object is standard size or oversized """
 
-    weight = df['dim-weight']
-    length = df['longest-side']
-    width = df['median-side']
-    height = df['shortest-side']
-
-    if any([(weight > 20),
-            (max(length, width, height) > 18),
-            (min(length, width, height) > 8),
-            (median([length, width, height]) > 14)]):
-        return "Oversize"
-    return "Standard"
+    bins = [0, .75, 20, 70, 150, 150.01, 500]
+    labels = ['small standard-size', 'large standard-size', 'small oversize', 'medium oversize', 'large oversize', 'special oversized']
+    df['product-size'] = pd.cut(df['fba-funct-weight'], bins, labels = labels)
+    return df
     
-    
-    # weight_tiers = {'small standard-size': .75,
-    #     'large standard-size': 20,
-    #     'small oversize': 70,
-    #     'medium oversize': 150,
-    #     'large oversize': 150,
-    #     'special oversize': 150.01}
-    # new_weights = []
-    # for new_weights in range(len(funct_weight)):
-    #     if [funct_weight < .75]:
-    #         new_weights.append('small standard-size')
-    #     elif [(funct_weight > .75) & (funct_weight < 20)]:
-    #         new_weights.append('large standard-size')
-    #     else:
-    #         new_weights.append('error')
-    # df['item-package'] = new_weights
-    # print(new_weights)
-    # x[(x>.75) & (x <20)] = 'large standard-size'
-    # x[(x>20) & (x <70)] = 'small oversize'
-    # x[(x>70) & (x <150)] = 'medium oversize'
-    # x[(x>150.01)] = 'medium oversize'
-    # df['product-size'] = x
-    
-
 
 length_plus_girth()
 dimensional_weight()
