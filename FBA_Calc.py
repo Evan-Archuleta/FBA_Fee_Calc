@@ -66,13 +66,37 @@ def fba_functional_weight():
 
 
 def standard_or_oversize():
-    """ Determine if object is standard size or oversized """
+    """ Determine if object is standard size or oversize """
 
     bins = [0, .75, 20, 70, 150, 150.01, 500]
-    labels = ['small standard-size', 'large standard-size', 'small oversize', 'medium oversize', 'large oversize', 'special oversized']
+    labels = ['small standard-size', 'large standard-size', 'small oversize', 'medium oversize', 'large oversize', 'special oversize']
     df['product-size'] = pd.cut(df['fba-funct-weight'], bins, labels = labels)
     return df
     
+def product_size():
+    """ determines the product size
+    https://sellercentral.amazon.com/gp/help/G201105770?language=en_US&ref=ag_G201105770_cont_G201112670
+    """
+
+    length = df['longest-side']
+    width = df['median-side']
+    height = df['shortest-side']
+    weight = df['fba-funct-weight']
+    #girth = df['length_plus_girth']
+
+    if any([(weight > .75),
+            (max(length, width, height) > 15),
+            (min(length, width, height) > .75),
+            (median([length, width, height]) > 12)]):
+        return "Small standard-size"
+    elif any([(weight > 20),
+            (max(length, width, height) > 18),
+            (min(length, width, height) > 8),
+            (median([length, width, height]) > 14)]):
+        return "Large standard-size"
+    return "oversize"
+
+    #return df['stand_oversize']
 
 length_plus_girth()
 dimensional_weight()
